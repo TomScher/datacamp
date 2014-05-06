@@ -157,3 +157,14 @@ if (DM.result == 1) {
   DM.result = list(FALSE,"Wrong!")
 }
 ```
+
+--- type:VideoExercise
+## This exercise contains a video!
+
+If necessary, you can add a description here.
+
+*** =video_link
+
+```{r,eval=FALSE}
+https://s3.amazonaws.com/assets.datacamp.com/video/teach_home/intro
+```

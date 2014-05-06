@@ -146,23 +146,31 @@ render_chapter_json_for_datacamp = function(file_name, payload, force) {
   exerciseList = list() 
   for(i in 1:length(slides)) {
     slide = slides[[i]]
-    exerciseList[[i]] = list(  title         = html2txt(slide$title),
-                               assignment    = clean_up_html(slide$content), 
-                               number        = slide$num,
-                               instructions  = clean_up_html(slide$instructions$content), 
-                               hint          = clean_up_html(slide$hint$content),
-                               sample_code   = extract_code( slide$sample_code$content ),
-                               solution      = extract_code( slide$solution$content ),
-                               sct           = extract_code( slide$sct$content), 
-                               pre_exercise_code = extract_code( slide$pre_exercise_code$content) )
-    if (!is.null(slide$type)) {  
+    if ( !is.null(slide$type) && slide$type == "VideoExercise" ) {
+      exerciseList[[i]] = list(  title         = html2txt(slide$title),
+                                 assignment    = clean_up_html(slide$content), 
+                                 number        = slide$num,
+                                 video_link    = gsub("[\r\n]", "", extract_code(slide$video_link$content)) )
       exerciseList[[i]][["type"]] = slide$type
-      if (slide$type == "MultipleChoiceExercise") {
-        exerciseList[[i]][["instructions"]] = make_multiple_choice_vector(exerciseList[[i]][["instructions"]])
-        if (!is.null(slide$contains_graph)) {
-          exerciseList[[i]][["contains_graph"]] = slide$contains_graph
+    } else {
+      exerciseList[[i]] = list(  title         = html2txt(slide$title),
+                                 assignment    = clean_up_html(slide$content), 
+                                 number        = slide$num,
+                                 instructions  = clean_up_html(slide$instructions$content), 
+                                 hint          = clean_up_html(slide$hint$content),
+                                 sample_code   = extract_code( slide$sample_code$content ),
+                                 solution      = extract_code( slide$solution$content ),
+                                 sct           = extract_code( slide$sct$content ),
+                                 pre_exercise_code = extract_code( slide$pre_exercise_code$content) )
+      if (!is.null(slide$type)) {  
+        exerciseList[[i]][["type"]] = slide$type
+        if (slide$type == "MultipleChoiceExercise") {
+          exerciseList[[i]][["instructions"]] = make_multiple_choice_vector(exerciseList[[i]][["instructions"]])
+          if (!is.null(slide$contains_graph)) {
+            exerciseList[[i]][["contains_graph"]] = slide$contains_graph
+          }
         }
-      }
+      }      
     }
   }
   
